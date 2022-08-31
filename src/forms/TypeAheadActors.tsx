@@ -1,5 +1,6 @@
 import { useState } from "react";
-import Typeahead from "react-bootstrap-typeahead/types/components/Typeahead";
+import Typeahead from "react-bootstrap-typeahead/types/components/Typeahead/Typeahead";
+
 import { ReactElement } from "react-markdown/lib/react-markdown";
 import { actorMovieDTO } from "../actors/actors.model";
 
@@ -18,6 +19,7 @@ export default function TypeAheadActors(props: typeAheadActorsProps){
         const selected: actorMovieDTO[]=[];
         
         const [draggedElement, setDraggedElement] = useState<actorMovieDTO | undefined>(undefined);
+        
         function handleDragStart(actor: actorMovieDTO){
             setDraggedElement(actor);
         }
