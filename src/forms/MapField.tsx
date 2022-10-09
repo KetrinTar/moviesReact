@@ -23,5 +23,7 @@ interface mapFieldProps{
     lngField: string;
 }
 MapField.defaultProps = {
-    coordinates: []
+    coordinates: [],
+    latField: 47.073628,
+    lngField: 8.367307
 }

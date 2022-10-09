@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { ReactElement } from "react-markdown/lib/react-markdown";
 import { useHistory, useParams } from "react-router-dom";
@@ -26,11 +26,9 @@ export default function EditEntity<TCreation, TRead>(props: editEntityProps<TCre
         try{
             await axios.put(`${props.url}/${id}`, entityToEdit);
             history.push(props.indexURL);
-        }
-        catch(error){
-            if(error && error.response){
-                setErrors(error.response.data)
-            }
+        } catch (error) {
+            const err = error as AxiosError
+            setErrors(err.response?.data)            
         }
     }
     

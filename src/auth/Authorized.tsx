@@ -1,0 +1,28 @@
+import { useContext, useEffect, useState } from "react";
+import { ReactElement } from "react-markdown/lib/react-markdown";
+import AuthenticationContext from "./AuthenticationContext";
+
+export default function Authorized(props: authorizedProps){
+    const [isAuthorized, setInAuthorized] = useState(true);
+    const {claims} = useContext(AuthenticationContext);
+
+    useEffect(() => {
+        if(props.role){
+            const index = claims.findIndex(claim => 
+                claim.name === 'role' && claim.value === props.role)
+                setInAuthorized(index > -1);
+        } else{
+            setInAuthorized(claims.length > 0);
+        }
+    }, [claims, props.role]);
+
+    return (<>
+        {isAuthorized ? props.authorized : props.nonAuthorized}
+    </>)
+}
+
+interface authorizedProps{
+    authorized: ReactElement;
+    nonAuthorized?: ReactElement;
+    role?: string;
+}

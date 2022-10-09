@@ -1,6 +1,6 @@
 export default function RecordsPerPageSelect(props: recordsPerPageSelect){
     return(
-        <div className="mb-3" style={{width: '150px'}}>
+        <div className="mb-3" style={{width: '150px', float: "right"}}>
             <label>Records per page:</label>
             <select 
                 className="form-select"

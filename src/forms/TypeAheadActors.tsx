@@ -1,25 +1,31 @@
+import axios, { AxiosResponse } from "axios";
 import { useState } from "react";
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import Typeahead from "react-bootstrap-typeahead/types/components/Typeahead/Typeahead";
 
 import { ReactElement } from "react-markdown/lib/react-markdown";
 import { actorMovieDTO } from "../actors/actors.model";
+import { urlActors } from "../endpoints";
 
 export default function TypeAheadActors(props: typeAheadActorsProps){
     
-    const actors: actorMovieDTO[]=[{
-                id: 1, name: 'Felipe', character:'', picture: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Tom_Holland_by_Gage_Skidmore.jpg/255px-Tom_Holland_by_Gage_Skidmore.jpg'
-            },
-            {
-                id: 2, name: 'Fernando', character:'', picture: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Tom_Hiddleston_%2836109110291%29_%28cropped%29.jpg/330px-Tom_Hiddleston_%2836109110291%29_%28cropped%29.jpg'
-            },
-            {
-                id: 3, name: 'Jessica', character:'', picture: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/JenniferAnistonHWoFFeb2012.jpg/330px-JenniferAnistonHWoFFeb2012.jpg'
-            }]
+        const [actors, setActors] = useState<actorMovieDTO[]>([]);
+        const [isLoading, setIsLoading] = useState(false);
     
         const selected: actorMovieDTO[]=[];
         
         const [draggedElement, setDraggedElement] = useState<actorMovieDTO | undefined>(undefined);
         
+        function handleSearch(query: string){
+            setIsLoading(true);
+
+            axios.get(`${urlActors}/searchByName/${query}`)
+                .then((response: AxiosResponse<actorMovieDTO[]>) => {
+                    setActors(response.data);
+                    setIsLoading(false);
+                });
+        }
+
         function handleDragStart(actor: actorMovieDTO){
             setDraggedElement(actor);
         }
@@ -42,17 +48,18 @@ export default function TypeAheadActors(props: typeAheadActorsProps){
     return (
         <div className="mb-3">
             <label>{props.displayName}</label>
-            <Typeahead id="typeahead" options={actors}
+            <AsyncTypeahead id="typeahead" options={actors}
                 onChange={actors => {
                     if(props.actors.findIndex(x => x.id === actors[0].id) === -1){
+                        actors[0].character = '';
                         props.onAdd([...props.actors, actors[0]]);
-                    }
-                    
-                    console.log(actors);
+                    }                   
                 }}
                 
                 labelKey={actor => actor.name}
-                filterBy={['name']}
+                filterBy={() => true}
+                isLoading={isLoading}
+                onSearch={handleSearch}
                 placeholder="Write the name of the actor"
                 minLength={1}
                 flip={true}
@@ -84,7 +91,7 @@ export default function TypeAheadActors(props: typeAheadActorsProps){
                         {props.listUI(actor)}
                         <span className="badge badge-primary badge-pill pointer text-dark"
                         style={{marginLeft:'0.5rem'}}
-                        onClick={() => props.onRemove(actor)}
+                        onClick={() => props.onRemove(actors)}
                         >X</span>
                         </li>)}
                 </ul>

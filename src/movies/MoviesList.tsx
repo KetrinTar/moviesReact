@@ -8,10 +8,13 @@ export default function MoviesList(props: moviesListProps){
     return <GenericList 
     loadingUI={<>Loading</>}
     list={props.movies}>
+    
         <div className={css.div}>
-                {props.movies?.map(movie => 
-                <IndividualMovie{...movie} key={movie.id}/>)}
-            </div>
+
+        {props.movies?.map(movie => 
+        <IndividualMovie{...movie} key={movie.id}/>)}
+    </div> 
+        
     </GenericList>
             
    

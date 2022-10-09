@@ -4,7 +4,8 @@ import Loading from "./Loading";
 export default function GenericList(props: GenericListProps){
         if(!props.list){
             if(props.loadingUI){
-                return props.loadingUI;
+                return <Loading />
+                //return props.loadingUI;
             }
             return <Loading />
         } else if(props.list.length === 0){

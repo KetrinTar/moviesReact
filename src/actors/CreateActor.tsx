@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { urlActors } from "../endpoints";
@@ -7,14 +7,14 @@ import { converActorToFormData } from "../utils/formDataUtils";
 import ActorForm from "./ActorForm";
 import { actorCreationDTO } from "./actors.model";
 
-export default function createActor(){
+export default function CreateActor(){
 
     const [errors, setErrors] = useState<string[]>([]);
     const history = useHistory();
     async function create(actor:actorCreationDTO) {
         try{
             const formData = converActorToFormData(actor);
-
+            console.log(formData.values);
             await axios({
                 method: 'post',
                 url:urlActors,
@@ -22,11 +22,9 @@ export default function createActor(){
                 headers: {'Content-Type': 'multipart/form-data'}
             });
             history.push('/actors');
-        }
-        catch(error){
-            //if(error && error.response){
-               // setErrors(error.response.data);
-           // }
+        } catch (error) {
+            const err = error as AxiosError
+            setErrors(err.response?.data)            
         }
     }
 

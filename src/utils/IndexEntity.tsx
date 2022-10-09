@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { ReactElement } from "react-markdown/lib/react-markdown";
 import { Link } from "react-router-dom";
@@ -34,11 +34,9 @@ export default function IndexEntity<T>(props: indexEntityProps<T>){
         try{
             await axios.delete(`${props.url}/${id}`);
             loadData();
-        }
-        catch(error){
-            if(error && error.response){
-                console.error(error.response.data);
-            }
+        } catch (error) {
+            const err = error as AxiosError
+            console.log(err.response?.data)            
         }
     }
 
@@ -52,24 +50,23 @@ export default function IndexEntity<T>(props: indexEntityProps<T>){
     return (
         <>
         <h3>{props.title}</h3>
-        <Link className="btn btn-primary" to={props.createUrl}>
-            Create {props.entityName}
-        </Link>
-        
+
         <RecordsPerPageSelect onChange={amountOfRecords => {
             setPage(1);
             setRecordsPerPage(amountOfRecords);
-        }} />
+        }} />       
+        <Link className="btn btn-primary" to={props.createUrl}>
+            Create {props.entityName}
+        </Link>
+        <GenericList list={entities}>
+            <table className="table table-striped">
+                {props.children(entities!, buttons)}
+            </table>            
+        </GenericList>
 
         <Pagination currentPage={page} totalAmountOfPages={totalAmountOfPages}
             onChange={newPage => setPage(newPage)}
             />
-        
-        <GenericList list={entities}>
-            <table className="table table-striped">
-                {props.children(entities!, buttons)}
-            </table>
-        </GenericList>
         </>
     )
 }

@@ -26,7 +26,7 @@ export default function MultipleSelector(props: multipleSelectorProps){
             <label>{props.displayName}</label>
             <div className="multiple-selector">
             <ul>
-                {props.nonselected.map(item => 
+                {props.nonselected?.map(item => 
                     <li key={item.key} onClick={() => {select(item)}}>{item.value}</li>)}
             </ul>
             <div className="multiple-selector-buttons">

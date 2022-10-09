@@ -1,14 +1,18 @@
+import { urlActors } from "../endpoints";
+import EditEntity from "../utils/EditEntity";
 import ActorForm from "./ActorForm";
+import { actorCreationDTO, actorDTO } from "./actors.model";
 
 export default function editActor(){
     return(
-        <>
-        <h3>Edit Actor</h3>
-        <ActorForm model={{name: 'Tom', dateOfBirth: new Date('1999-06-01T00:00:00'),
-        biography: '#Something',
-        pictureURL : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Jennifer_Lawrence_in_2016.jpg/338px-Jennifer_Lawrence_in_2016.jpg'}} 
-            onSubmit={values => console.log(values)}
-        />
-        </>
+        <EditEntity<actorCreationDTO, actorDTO> 
+        url={urlActors} indexURL="/actors" entityName="Actor"
+        >
+            {(entity, edit) => 
+            <ActorForm model={entity}
+            onSubmit={async values => await edit(values)}
+            />
+            }
+        </EditEntity>
     )
 }
